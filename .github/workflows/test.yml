@@ -1,0 +1,33 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: strajk-bowling/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./strajk-bowling
+        run: npm ci
+
+      - name: Run tests
+        working-directory: ./strajk-bowling
+        run: npm run test:run
+

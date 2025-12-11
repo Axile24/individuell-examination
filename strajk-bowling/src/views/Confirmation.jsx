@@ -46,7 +46,8 @@ function Confirmation() {
             defaultValue={confirmation.bookingId}
             disabled="disabled"
           />
-          <article className="confirmation__price">
+          {/* data-testid needed for testing booking number and total price display */}
+          <article className="confirmation__price" data-testid="booking-price">
             <p>Total:</p>
             <p>{confirmation.price} sek</p>
           </article>
@@ -55,7 +56,8 @@ function Confirmation() {
           </button>
         </form>
       ) : (
-        <h2 className="confirmation__no-booking">Inga bokning gjord!</h2>
+        // data-testid needed for testing when no booking exists
+        <h2 className="confirmation__no-booking" data-testid="no-booking-message">Inga bokning gjord!</h2>
       )}
     </section>
   );

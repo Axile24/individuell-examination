@@ -148,7 +148,8 @@ function Booking() {
         removeShoe={removeShoe}
         shoes={shoes}
       />
-      <button className="button booking__button" onClick={book}>
+      {/* data-testid needed for testing the booking submission button */}
+      <button className="button booking__button" onClick={book} data-testid="submit-booking-button">
         strIIIIIike!
       </button>
       {error ? <ErrorMessage message={error} /> : ""}

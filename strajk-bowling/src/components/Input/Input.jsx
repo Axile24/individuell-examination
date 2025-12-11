@@ -21,6 +21,7 @@ function Input({
         defaultValue={defaultValue ? defaultValue : ""}
         maxLength={maxLength}
         disabled={disabled}
+        data-testid={name ? `input-${name}` : undefined}
       />
     </section>
   );
