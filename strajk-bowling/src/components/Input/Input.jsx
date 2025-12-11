@@ -13,6 +13,7 @@ function Input({
   return (
     <section className="input">
       <label className="input__label">{label}</label>
+      {/* data-testid needed for testing input fields in booking form (date, time, people, lanes) */}
       <input
         type={type}
         className={`input__field ${customClass ? customClass : ""}`}

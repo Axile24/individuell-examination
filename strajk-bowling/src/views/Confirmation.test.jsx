@@ -14,11 +14,13 @@ const renderConfirmation = (initialEntries = ['/confirmation']) => {
 
 describe('Confirmation View - User Story 5: Navigate between booking and confirmation views', () => {
   beforeEach(() => {
+    console.log('Clearing sessionStorage');
     // Clear sessionStorage before each test
     sessionStorage.clear();
   });
 
   it('should navigate from booking view to confirmation view when booking is complete', async () => {
+    console.log('Test: Confirmation view renders booking details');
     // Acceptanskriterier: Användaren ska kunna navigera från bokningsvyn till bekräftelsevyn när bokningen är klar
     // This is tested in Booking.test.jsx when checking navigation after booking submission
     // Here we verify the confirmation view renders correctly
@@ -31,24 +33,34 @@ describe('Confirmation View - User Story 5: Navigate between booking and confirm
       price: 340,
     };
 
+    console.log('Setting mock confirmation in sessionStorage');
     sessionStorage.setItem('confirmation', JSON.stringify(mockConfirmation));
 
     renderConfirmation();
+    console.log('Confirmation component rendered');
 
     // Verify booking details are displayed
     expect(screen.getByDisplayValue('2024-12-25 18:00')).toBeInTheDocument();
+    console.log('Date/time displayed');
     expect(screen.getByDisplayValue('2')).toBeInTheDocument();
+    console.log('People count displayed');
     expect(screen.getByDisplayValue('1')).toBeInTheDocument();
+    console.log('Lanes count displayed');
     expect(screen.getByDisplayValue('BK-123456')).toBeInTheDocument();
+    console.log('Booking ID displayed');
   });
 
   it('should display "Ingen bokning gjord" if user navigates to confirmation view without making a booking', () => {
+    console.log('Test: No booking message');
     // Acceptanskriterier: Om användaren navigerar till bekräftelsevyn och ingen bokning är gjord eller finns i session storage ska texten "Ingen bokning gjord visas"
     renderConfirmation();
+    console.log('Confirmation component rendered (no booking in storage)');
 
     const noBookingMessage = screen.getByTestId('no-booking-message');
+    console.log('Found no-booking message');
     expect(noBookingMessage).toBeInTheDocument();
     expect(noBookingMessage).toHaveTextContent('Inga bokning gjord!');
+    console.log('No booking message text verified');
   });
 
   it('should display saved booking from session storage if it exists', () => {
@@ -81,6 +93,7 @@ describe('Confirmation View - User Story 5: Navigate between booking and confirm
 
 describe('Confirmation View - User Story 4: Display booking number and total sum', () => {
   beforeEach(() => {
+    console.log('Clearing sessionStorage');
     sessionStorage.clear();
   });
 
