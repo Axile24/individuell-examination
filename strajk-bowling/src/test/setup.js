@@ -1,8 +1,11 @@
+// Import polyfills first (must be before MSW)
+import './polyfills.js';
+
 import { expect, afterEach, beforeAll, afterAll } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
 
-// Import MSW server
+// Import MSW server after polyfill
 import { server } from './mocks/server';
 
 // Extend Vitest's expect with jest-dom matchers

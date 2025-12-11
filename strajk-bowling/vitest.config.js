@@ -6,13 +6,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/test/setup.js',
-    pool: 'forks',
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
-    },
+    setupFiles: ['./src/test/polyfills.js', './src/test/setup.js'],
   },
 });
 
