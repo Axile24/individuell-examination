@@ -42,7 +42,49 @@ if (NodeURLSearchParams) {
 }
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'polyfill-url-before-all',
+      config() {
+        // This runs during config phase - ensure polyfill is set
+        // The polyfill above should already be set, but this ensures it
+        if (typeof global !== 'undefined' && !global.URL) {
+          try {
+            const { URL: NodeURL, URLSearchParams: NodeURLSearchParams } = require('url');
+            if (NodeURL) {
+              global.URL = NodeURL;
+              globalThis.URL = NodeURL;
+            }
+            if (NodeURLSearchParams) {
+              global.URLSearchParams = NodeURLSearchParams;
+              globalThis.URLSearchParams = NodeURLSearchParams;
+            }
+          } catch (e) {
+            // Ignore
+          }
+        }
+      },
+      buildStart() {
+        // Also set during buildStart
+        if (typeof global !== 'undefined') {
+          try {
+            const { URL: NodeURL, URLSearchParams: NodeURLSearchParams } = require('url');
+            if (NodeURL && !global.URL) {
+              global.URL = NodeURL;
+              globalThis.URL = NodeURL;
+            }
+            if (NodeURLSearchParams && !global.URLSearchParams) {
+              global.URLSearchParams = NodeURLSearchParams;
+              globalThis.URLSearchParams = NodeURLSearchParams;
+            }
+          } catch (e) {
+            // Ignore
+          }
+        }
+      },
+    },
+  ],
   test: {
     globals: true,
     environment: 'jsdom',
