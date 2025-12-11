@@ -42,7 +42,27 @@ if (NodeURLSearchParams) {
 }
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'replace-whatwg-url',
+      resolveId(id) {
+        // Intercept whatwg-url and replace with Node's URL
+        if (id === 'whatwg-url' || id.includes('whatwg-url')) {
+          return 'node:url';
+        }
+        return null;
+      },
+    },
+  ],
+  resolve: {
+    alias: {
+      // Replace whatwg-url with Node's built-in URL
+      'whatwg-url': 'node:url',
+      'whatwg-url/lib/URL.js': 'node:url',
+      'whatwg-url/lib/URLSearchParams.js': 'node:url',
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
@@ -58,7 +78,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['msw'],
-
+    exclude: ['whatwg-url'],
   },
 });
 
