@@ -46,148 +46,116 @@ const getAllInputsByLabel = (labelPattern) => {
 
 describe('Booking View - User Story 1: Book date, time and number of players', () => {
   beforeEach(() => {
-    console.log('Clearing sessionStorage and resetting mocks');
     // Clear sessionStorage and reset mocks before each test
     sessionStorage.clear();
     mockNavigate.mockClear();
   });
 
   it('should allow user to select date and time from calendar and time picker', async () => {
-    console.log('Test: Selecting date and time');
     // Acceptanskriterier: Användaren ska kunna välja ett datum och en tid från ett kalender- och tidvalssystem
     const user = userEvent.setup();
     renderBooking();
-    console.log('Component rendered');
 
     const dateInput = screen.getByTestId('input-when');
     const timeInput = screen.getByTestId('input-time');
-    console.log('Found date and time inputs');
 
     expect(dateInput).toBeInTheDocument();
     expect(timeInput).toBeInTheDocument();
 
-    console.log('Typing date: 2024-12-25');
     await user.type(dateInput, '2024-12-25');
-    console.log('Typing time: 18:00');
     await user.type(timeInput, '18:00');
 
     expect(dateInput).toHaveValue('2024-12-25');
     expect(timeInput).toHaveValue('18:00');
-    console.log('Date and time values set correctly');
   });
 
   it('should allow user to enter number of players (minimum 1)', async () => {
-    console.log('Test: Entering number of players');
     // Acceptanskriterier: Användaren ska kunna ange antal spelare (minst 1 spelare)
     const user = userEvent.setup();
     renderBooking();
 
     const peopleInput = screen.getByTestId('input-people');
-    console.log('Found people input');
 
     expect(peopleInput).toBeInTheDocument();
-    console.log('Typing number of players: 3');
     await user.type(peopleInput, '3');
 
     expect(peopleInput).toHaveValue(3);
-    console.log('People input value verified: 3');
   });
 
   it('should allow user to reserve one or more lanes based on number of players', async () => {
-    console.log('Test: Reserving lanes');
     // Acceptanskriterier: Användaren ska kunna reservera ett eller flera banor beroende på antal spelare
     const user = userEvent.setup();
     renderBooking();
 
     const lanesInput = screen.getByTestId('input-lanes');
-    console.log('Found lanes input');
 
     expect(lanesInput).toBeInTheDocument();
-    console.log('Typing number of lanes: 2');
     await user.type(lanesInput, '2');
 
     expect(lanesInput).toHaveValue(2);
-    console.log('Lanes input value verified: 2');
   });
 
   it('should display error message if user does not fill in date, time, players or lanes', async () => {
-    console.log('Test: Error message when fields are empty');
     // VG Acceptanskriterier: Ifall användaren inte fyller i något av ovanstående så ska ett felmeddelande visas
     const user = userEvent.setup();
     renderBooking();
 
     const submitButton = screen.getByTestId('submit-booking-button');
-    console.log('Found submit button');
-    console.log('Clicking submit button without filling fields');
     await user.click(submitButton);
 
     await waitFor(() => {
       const errorMessage = screen.getByTestId('error-message');
-      console.log('Error message found');
       expect(errorMessage).toBeInTheDocument();
       expect(errorMessage).toHaveTextContent('Alla fälten måste vara ifyllda');
-      console.log('Error message text verified: "Alla fälten måste vara ifyllda"');
     });
   });
 
   it('should display error message if user enters negative numbers for people or lanes', async () => {
-    console.log('Test: Negative numbers validation');
     // Acceptanskriterier: Användaren ska kunna ange antal spelare (minst 1 spelare) - testar att negativa tal inte accepteras
     const user = userEvent.setup();
     renderBooking();
-    console.log('Component rendered');
 
     const dateInput = screen.getByTestId('input-when');
     const timeInput = screen.getByTestId('input-time');
     const peopleInput = screen.getByTestId('input-people');
     const lanesInput = screen.getByTestId('input-lanes');
-    console.log('Found all input fields');
 
     await user.type(dateInput, '2024-12-25');
     await user.type(timeInput, '18:00');
     
     // Test negative number for people
-    console.log('Testing negative number for people: -1');
     await user.clear(peopleInput);
     await user.type(peopleInput, '-1');
     await user.type(lanesInput, '1');
 
     const submitButton = screen.getByTestId('submit-booking-button');
-    console.log('Clicking submit with negative people value');
     await user.click(submitButton);
 
     await waitFor(() => {
       const errorMessage = screen.getByTestId('error-message');
-      console.log('Error message found for negative people');
       expect(errorMessage).toBeInTheDocument();
       expect(errorMessage).toHaveTextContent('Alla fälten måste vara ifyllda');
     });
 
     // Test negative number for lanes
-    console.log('Testing negative number for lanes: -1');
     await user.clear(peopleInput);
     await user.clear(lanesInput);
     await user.type(peopleInput, '2');
     await user.type(lanesInput, '-1');
 
-    console.log('Clicking submit with negative lanes value');
     await user.click(submitButton);
 
     await waitFor(() => {
       const errorMessage = screen.getByTestId('error-message');
-      console.log('Error message found for negative lanes');
       expect(errorMessage).toBeInTheDocument();
       expect(errorMessage).toHaveTextContent('Alla fälten måste vara ifyllda');
-      console.log('Negative number validation test completed');
     });
   });
 
   it('should display error message if not enough lanes available for number of players', async () => {
-    console.log('Test: Not enough lanes error');
     // VG Acceptanskriterier: Om det inte finns tillräckligt med lediga banor för det angivna antalet spelare, ska användaren få ett felmeddelande
     const user = userEvent.setup();
     renderBooking();
-    console.log('Component rendered');
 
     const dateInput = screen.getByTestId('input-when');
     const timeInput = screen.getByTestId('input-time');
@@ -224,17 +192,14 @@ describe('Booking View - User Story 1: Book date, time and number of players', (
 
 describe('Booking View - User Story 2: Select shoe size for each player', () => {
   beforeEach(() => {
-    console.log('Clearing sessionStorage and resetting mocks');
     sessionStorage.clear();
     mockNavigate.mockClear();
   });
 
   it('should allow user to enter shoe size for each player', async () => {
-    console.log('Test: Entering shoe sizes');
     // Acceptanskriterier: Användaren ska kunna ange skostorlek för varje spelare
     const user = userEvent.setup();
     renderBooking();
-    console.log('Component rendered');
 
     const peopleInput = screen.getByTestId('input-people');
     await user.type(peopleInput, '2');
@@ -388,7 +353,6 @@ describe('Booking View - User Story 2: Select shoe size for each player', () => 
 
 describe('Booking View - User Story 3: Remove shoe size field', () => {
   beforeEach(() => {
-    console.log('Clearing sessionStorage and resetting mocks');
     sessionStorage.clear();
     mockNavigate.mockClear();
   });
@@ -482,30 +446,24 @@ describe('Booking View - User Story 3: Remove shoe size field', () => {
 
 describe('Booking View - User Story 4: Complete reservation and get booking number', () => {
   beforeEach(() => {
-    console.log('Clearing sessionStorage and resetting mocks');
     sessionStorage.clear();
     mockNavigate.mockClear();
   });
 
   it('should allow user to complete booking by clicking "slutför bokning" button', async () => {
-    console.log('Test: Submit button exists');
     // Acceptanskriterier: Användaren ska kunna slutföra bokningen genom att klicka på en "slutför bokning"-knapp
     const user = userEvent.setup();
     renderBooking();
 
     const submitButton = screen.getByTestId('submit-booking-button');
-    console.log('Found submit button');
     expect(submitButton).toBeInTheDocument();
     expect(submitButton).toHaveTextContent('strIIIIIike!');
-    console.log('Submit button text verified: "strIIIIIike!"');
   });
 
   it('should generate booking number and display it to user after booking is completed', async () => {
-    console.log('Test: Booking number generation');
     // Acceptanskriterier: Systemet ska generera ett bokningsnummer och visa detta till användaren efter att bokningen är slutförd
     const user = userEvent.setup();
     renderBooking();
-    console.log('Component rendered');
 
     const dateInput = screen.getByTestId('input-when');
     const timeInput = screen.getByTestId('input-time');
@@ -539,11 +497,9 @@ describe('Booking View - User Story 4: Complete reservation and get booking numb
   });
 
   it('should calculate and display total sum based on number of players (120 kr per person) and lanes (100 kr per lane)', async () => {
-    console.log('Test: Total sum calculation');
     // Acceptanskriterier: Systemet ska beräkna och visa den totala summan för bokningen baserat på antalet spelare (120 kr per person) samt antalet reserverade banor (100 kr per bana)
     const user = userEvent.setup();
     renderBooking();
-    console.log('Component rendered');
 
     const dateInput = screen.getByTestId('input-when');
     const timeInput = screen.getByTestId('input-time');
