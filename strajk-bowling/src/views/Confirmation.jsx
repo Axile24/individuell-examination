@@ -8,15 +8,26 @@ import Input from "../components/Input/Input";
 function Confirmation() {
   const { state } = useLocation();
 
-  const confirmation =
-    state?.confirmationDetails ||
-    JSON.parse(sessionStorage.getItem("confirmation"));
+  // Safely parse sessionStorage, handle null or invalid JSON
+  const sessionConfirmation = sessionStorage.getItem("confirmation");
+  let parsedConfirmation = null;
+  
+  if (sessionConfirmation) {
+    try {
+      parsedConfirmation = JSON.parse(sessionConfirmation);
+    } catch (error) {
+      // If JSON parse fails, use null
+      parsedConfirmation = null;
+    }
+  }
+
+  const confirmation = state?.confirmationDetails || parsedConfirmation;
 
   return (
     <section className="confirmation">
       <Navigation />
       <Top title="See you soon!" />
-      {state || confirmation ? (
+      {confirmation ? (
         <form className="confirmation__details">
           <Input
             label="When"

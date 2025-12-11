@@ -1,6 +1,8 @@
 import { expect, afterEach, beforeAll, afterAll } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
+
+// Import MSW server
 import { server } from './mocks/server';
 
 // Extend Vitest's expect with jest-dom matchers
