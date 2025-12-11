@@ -7,6 +7,12 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/test/setup.js',
+    deps: {
+      inline: ['msw'],
+    },
+  },
+  optimizeDeps: {
+    include: ['msw'],
   },
 });
 
