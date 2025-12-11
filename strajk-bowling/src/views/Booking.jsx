@@ -21,7 +21,6 @@ function Booking() {
 
   function updateBookingDetails(event) {
     const { name, value } = event.target;
-    console.log("Updating booking detail:", name, "=", value);
     setError("");
 
     setBooking((prevState) => ({
@@ -44,19 +43,15 @@ function Booking() {
   }
 
   function addShoe(name) {
-    console.log("Adding shoe field:", name);
     setError("");
 
     setShoes([...shoes, { id: name, size: "" }]);
-    console.log("Total shoes:", shoes.length + 1);
   }
 
   function removeShoe(name) {
-    console.log("Removing shoe field:", name);
     setError("");
 
     setShoes(shoes.filter((shoe) => shoe.id !== name));
-    console.log("Remaining shoes:", shoes.length - 1);
   }
 
   function isShoeSizesFilled() {
@@ -77,31 +72,19 @@ function Booking() {
   }
 
   async function sendBooking(bookingInfo) {
-    console.log("Sending booking request:", bookingInfo);
-    try {
-      const response = await fetch(
-        "https://731xy9c2ak.execute-api.eu-north-1.amazonaws.com/booking",
-        {
-          method: "POST",
-          headers: {
-            "x-api-key": "strajk-B2mWxADrthdHqd22",
-          },
-          body: JSON.stringify(bookingInfo),
-        }
-      );
-      
-      if (!response.ok) {
-        console.error("Booking request failed:", response.status, response.statusText);
-        throw new Error(`HTTP error! status: ${response.status}`);
+    const response = await fetch(
+      "https://731xy9c2ak.execute-api.eu-north-1.amazonaws.com/booking",
+      {
+        method: "POST",
+        headers: {
+          "x-api-key": "strajk-B2mWxADrthdHqd22",
+        },
+        body: JSON.stringify(bookingInfo),
       }
-      
-      const data = await response.json();
-      console.log("Booking response received:", data);
-      return data;
-    } catch (error) {
-      console.error("Error sending booking:", error);
-      throw error;
-    }
+    );
+    const data = await response.json();
+
+    return data;
   }
 
   function comparePeopleAndShoes() {
@@ -110,15 +93,13 @@ function Booking() {
 
   function saveConfirmation(confirmation) {
     return new Promise((resolve) => {
-      console.log("Saving confirmation to sessionStorage:", confirmation);
       sessionStorage.setItem("confirmation", JSON.stringify(confirmation));
-      console.log("Confirmation saved successfully");
+
       resolve();
     });
   }
 
   async function book() {
-    console.log("Book function called");
     let errorMessage = "";
 
     if (
@@ -128,27 +109,15 @@ function Booking() {
       booking.people < 1
     ) {
       errorMessage = "Alla fälten måste vara ifyllda";
-      console.log("Validation error: Missing required fields");
     } else if (!comparePeopleAndShoes()) {
       errorMessage = "Antalet skor måste stämma överens med antal spelare";
-      console.log("Validation error: People and shoes count mismatch", {
-        people: booking.people,
-        shoes: shoes.length
-      });
     } else if (!isShoeSizesFilled()) {
       errorMessage = "Alla skor måste vara ifyllda";
-      console.log("Validation error: Not all shoe sizes filled");
     } else if (!checkPlayersAndLanes()) {
       errorMessage = "Det får max vara 4 spelare per bana";
-      console.log("Validation error: Too many players for lanes", {
-        people: booking.people,
-        lanes: booking.lanes,
-        maxPlayers: booking.lanes * 4
-      });
     }
 
     if (errorMessage) {
-      console.log("Setting error message:", errorMessage);
       setError(errorMessage);
       return;
     }
@@ -160,21 +129,12 @@ function Booking() {
       shoes: shoes.map((shoe) => shoe.size),
     };
 
-    console.log("Booking info prepared:", bookingInfo);
+    const confirmation = await sendBooking(bookingInfo);
+    await saveConfirmation(confirmation.bookingDetails);
 
-    try {
-      const confirmation = await sendBooking(bookingInfo);
-      console.log("Booking successful, saving confirmation:", confirmation.bookingDetails);
-      await saveConfirmation(confirmation.bookingDetails);
-      console.log("Confirmation saved to sessionStorage");
-      
-      navigate("/confirmation", {
-        state: { confirmationDetails: confirmation.bookingDetails },
-      });
-    } catch (error) {
-      console.error("Failed to complete booking:", error);
-      setError("Ett fel uppstod vid bokningen. Försök igen.");
-    }
+    navigate("/confirmation", {
+      state: { confirmationDetails: confirmation.bookingDetails },
+    });
   }
 
   return (
