@@ -8,9 +8,13 @@ import Input from "../components/Input/Input";
 function Confirmation() {
   const { state } = useLocation();
 
+  console.log("Confirmation component rendered, location state:", state);
+  
   const confirmation =
     state?.confirmationDetails ||
     JSON.parse(sessionStorage.getItem("confirmation"));
+  
+  console.log("Confirmation data:", confirmation);
 
   return (
     <section className="confirmation">
